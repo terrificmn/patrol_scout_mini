@@ -1,0 +1,14 @@
+<launch>
+  <arg name="multi_robot_name" default=""/>
+
+  <arg name="model"/>
+  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find scout_description)/urdf/mini.xacro'" />
+  <param name="robot_description" command="$(arg urdf_file)" />
+
+
+  <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
+    <param name="publish_frequency" type="double" value="50.0" />
+    <param name="tf_prefix" value="$(arg multi_robot_name)"/>
+  </node>
+
+</launch>
