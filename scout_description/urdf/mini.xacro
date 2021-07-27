@@ -73,6 +73,25 @@
         <child link="inertial_link" />
     </joint>
 
+    <link name="t265_link">
+    </link>
+
+    <joint name="t265_joint" type="fixed">
+        <origin xyz="0.32 0 0.18" rpy="0 0.2 0" />
+        <parent link="base_link"/>
+        <child link="t265_link"/>
+    </joint>
+
+    <link name="l515_link">
+    </link>
+
+    <joint name="l515_joint" type="fixed">
+        <orgin xyz="0.32 0 0.18" rpy="0 0 0" />
+        <parent link="base_link" />
+        <child link="l515_link" />
+    </joint>
+
+
     <!-- For testing, hang the robot up in the air -->
     <!-- <link name="world" />
     <joint name="world_to_base_link=" type="fixed">

@@ -13,6 +13,7 @@
     <arg name="simulation"        default="false"/>
     <arg name="sw_registered"     default="false"/>
     <arg name="localization"      default="false"/>
+    <arg name="move_forward_only" default="true"/>
     
     <include file="$(find scout_bringup)/launch/scout_mini_remote.launch"></include>
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
@@ -37,14 +38,16 @@
             
     </include>
 
-    <!-- move base 넣어주기 -->
+    <include file="$(find scout_description)/launch/move_base.launch">
+        <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+    </include>
 
     <!-- rtabmap -->
     <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
         <!-- <param name="Grid/RangeMax"              type="string" value="6.0"/> -->
         <!-- Visual Odometry Stategy into Frame to Frame 로 바꿈 -->
         <param name="Odom/Strategy"              type="string" value="1"/>
-
+         <remap from="/rtabmap/grid_map" to="/map"/>
             <arg name="rtabmap_args"       value="--delete_db_on_start
                                             --SURF/HessianThreshold 100"/>
 
@@ -97,13 +100,13 @@
             <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/>
 
-            <arg name="rviz"               value="$(arg use_rviz)"/>
             <arg name="rtabmapviz"         value="$(arg use_rtabmapviz)"/>
     </include>
 
-    <node name="filtered_odom" pkg="scout_bringup" type="filtered_odom" />
+    <node name="filtered_odom_sample" pkg="scout_bringup" type="filtered_odom_sample" />
 
-    <group if="$(arg open_rviz)"> 
+    
+    <group if="$(arg use_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
         args="-d $(find scout_description)/rviz/scout_navigation.rviz"/>
     </group>
