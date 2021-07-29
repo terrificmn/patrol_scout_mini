@@ -39,7 +39,6 @@ target_link_libraries(scout_skid_steer_controller scout_gazebo ${catkin_LIBRARIE
 ## Install ##
 #############
 
-roslaunch_add_file_check(launch)
 
 install(
   DIRECTORY launch worlds
