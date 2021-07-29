@@ -99,7 +99,7 @@
             <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
             <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/>
-
+            <remap from="move_base"            to="/move_base"/>
             <arg name="rtabmapviz"         value="$(arg use_rtabmapviz)"/>
     </include>
 
