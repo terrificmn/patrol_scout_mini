@@ -15,7 +15,7 @@ obstacle_layer:
  enabled: true
  obstacle_range: 1.0 #3.0
  raytrace_range: 3.5 #3.5
- inflation_radius: 0.2 #0.2
+ inflation_radius: 0.5 #0.2 #장애물 공간 radius
  track_unknown_space: true #fault
  combination_method: 1
 
@@ -25,7 +25,8 @@ obstacle_layer:
 
 inflation_layer:
   enabled:              true
-  cost_scaling_factor:  10.0  # exponential rate at which the obstacle cost drops off (default: 10)
+  cost_scaling_factor:  5.0  # exponential rate at which the obstacle cost drops off (default: 10)
+  #장애물 사이를 지나갈 때 장애물로 부터 멀리떨어져서 지나가려면 숫자가 작아야함
   inflation_radius:     0.3  # max. distance from an obstacle at which costs are incurred for planning paths. #0.5
 
 static_layer:

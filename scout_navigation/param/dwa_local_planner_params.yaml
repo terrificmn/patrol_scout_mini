@@ -5,19 +5,22 @@ controller_frequency: 5.0
 
 DWAPlannerROS:
   # Robot configuration parameters  
-  max_vel_x: 0.4
-  min_vel_x: -0.4
+  max_vel_x: 0.4   #최고 속도
+  min_vel_x: -0.4   #마이너스면 후진 가능해짐 (최고속)
   max_vel_y: 0
   min_vel_y: 0
 
   # The velocity when robot is moving in a straight line
-  max_vel_trans:  0.6
-  min_vel_trans:  0.2
+  max_vel_trans:  0.6  # 이것보다 빨라질 수 없음
+  min_vel_trans:  0.2  # 이것보다 느려질 수 없음
 
   max_vel_theta: 1.5
   min_vel_theta: 1.5
 
-  acc_lim_x: 3.0
+  max_rot_vel: 1.5  # 회전할 때 실제 최고속도: 이것보다 빨리질 수 없음
+  min_rot_vel: 0.3
+
+  acc_lim_x: 3.0  #acceleration limit
   acc_lim_y: 0.0
   acc_lim_theta: 2.0
 
