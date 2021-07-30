@@ -89,8 +89,6 @@
             <!-- odom_frame_id should not be set -->
             <arg name="odom_topic"         value="/$(arg camera1)/odom/sample"/>
             
-            <!-- <remap from="odom_frame_id" to="odom"/> -->
-            
             
             <arg name="rgb_topic"          value="/$(arg camera2)/color/image_raw"/>
             <arg name="camera_info_topic"  value="/$(arg camera2)/color/camera_info"/>
@@ -105,6 +103,8 @@
 
     <node name="filtered_odom_sample" pkg="scout_bringup" type="filtered_odom_sample" />
 
+    <!-- 베이스링크와 맵을 연결해서 tf-tree가 완성되고 모델도 잘 나오게 된다. -->
+    <node pkg="tf" type="static_transform_publisher" name="base_link_to_map" args="0 0 0 0 0 0 /base_link /map 100"/>
     
     <group if="$(arg use_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"

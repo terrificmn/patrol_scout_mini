@@ -1,0 +1,80 @@
+<launch>
+
+   <arg name="device_type_camera1"    		default="t265"/>
+    <arg name="device_type_camera2"    		default="l515"/>	<!-- Note: using regular expression. match D435, D435i, D415... -->
+    <arg name="serial_no_camera1"    			default="943222110188"/>
+    <arg name="serial_no_camera2"    			default="f0460650"/>
+    <arg name="camera1"              			default="t265"/>		<!-- Note: Replace with camera name -->
+    <arg name="camera2"              			default="l515"/>		<!-- Note: Replace with camera name -->
+    <arg name="clip_distance"             default="-2"/>
+    <arg name="use_rviz"                  default="true"/>
+    <arg name="use_rtabmapviz"            default="false"/>
+    <arg name="rgbd_odometry"     default="false"/>
+    <arg name="simulation"        default="false"/>
+    <arg name="sw_registered"     default="false"/>
+    <arg name="localization"      default="false"/>
+    
+
+    
+    
+    <!-- rs-l515_and_t265.launch need to be created in a realsense2-camera pkg -->
+    <include file="$(find realsense2_camera)/launch/rs_l515_and_t265.launch">
+            <arg name="device_type_camera1"             value="$(arg device_type_camera1)"/>
+            <arg name="device_type_camera2"             value="$(arg device_type_camera2)"/>
+            <arg name="serial_no_camera1"               value="$(arg serial_no_camera1)"/>
+            <arg name="serial_no_camera2"               value="$(arg serial_no_camera2)"/>
+            <arg name="camera1"                         value="$(arg camera1)"/>
+            <arg name="camera2"                         value="$(arg camera2)"/>
+            <arg name="clip_distance"                   value="$(arg clip_distance)"/>
+
+            <!-- need be modified and try out below -->
+            <!-- need be modified and try out-->
+            <!-- need be modified and try out-->
+            <!-- <arg name="unite_imu_method"> --> <!-- trying-->
+            <!-- <arg name="align_depth" value="true"/> 
+            <arg name="filters" value="pointcloud"/> -->
+            <!-- <arg name="hold_back_imu_for_frames" />  -->
+            
+    </include>
+
+  <!-- <node pkg="tf" type="static_transform_publisher" name="t265_to_l515_navigation" args="0 0 0.05 0 0 0 /t265_link /l515_link 10"/> -->
+
+  <!-- Arguments -->
+  <!-- <arg name="model" /> -->
+  <arg name="map_file" default="$(find scout_navigation)/maps/map.yaml"/>
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="false"/>
+
+  <!-- scout_mini -->
+  <include file="$(find scout_bringup)/launch/scout_mini_remote.launch">
+    <!-- <arg name="model" value="$(arg model)" /> -->
+  </include>
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  
+  <!-- 베이스링크와 맵을 연결해서 tf-tree가 완성되고 모델도 잘 나오게 된다. -->
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_map" args="0 0 0 0 0 0 /base_link /map 100"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_t265_link" args="0 0 0 0 0 0 /base_link /t265_link 100"/>
+
+  <!-- Map server -->
+  <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
+    <param name="frame_idd" value="map"/>
+  </node>
+
+  <!-- AMCL -->
+  <include file="$(find scout_navigation)/launch/amcl.launch"/>
+
+  <!-- move_base -->
+  <include file="$(find scout_navigation)/launch/move_base.launch">
+    <!-- <arg name="model" value="$(arg model)" /> -->
+    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
+  </include>
+
+  <!-- 실제 구동할 수 있게 scout-mini 불러오기 -->
+  <include file="$(find scout_bringup)/launch/scout_minimal.launch" />
+  
+  <!-- rviz -->
+  <group if="$(arg open_rviz)"> 
+    <node pkg="rviz" type="rviz" name="rviz" required="true"
+          args="-d $(find scout_navigation)/rviz/scout_navigation.rviz"/>
+  </group>
+</launch>

@@ -1,9 +1,7 @@
 <launch>
   <arg name="multi_robot_name" default=""/>
 
-  <arg name="model"/>
-  <arg name="urdf_file" default="$(find xacro)/xacro --inorder '$(find scout_description)/urdf/mini.xacro'" />
-  <param name="robot_description" command="$(arg urdf_file)" />
+  <include file="$(find scout_bringup)/launch/includes/description.launch.xml" />
 
 
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
