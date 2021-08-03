@@ -5,19 +5,19 @@ controller_frequency: 5.0
 
 DWAPlannerROS:
   # Robot configuration parameters  
-  max_vel_x: 0.4   #최고 속도
-  min_vel_x: -0.4   #마이너스면 후진 가능해짐 (최고속)
+  max_vel_x: 0.3   #최고 속도
+  min_vel_x: -0.3   #마이너스면 후진 가능해짐 (최고속)
   max_vel_y: 0
   min_vel_y: 0
 
   # The velocity when robot is moving in a straight line
-  max_vel_trans:  0.6  # 이것보다 빨라질 수 없음
-  min_vel_trans:  0.2  # 이것보다 느려질 수 없음
+  max_vel_trans:  0.4  # 이것보다 빨라질 수 없음
+  min_vel_trans:  0.1  # 이것보다 느려질 수 없음
 
   max_vel_theta: 1.5
   min_vel_theta: 1.5
 
-  max_rot_vel: 1.5  # 회전할 때 실제 최고속도: 이것보다 빨리질 수 없음
+  max_rot_vel: 0.5  # 회전할 때 실제 최고속도: 이것보다 빨리질 수 없음
   min_rot_vel: 0.3
 
   acc_lim_x: 3.0  #acceleration limit
@@ -36,14 +36,14 @@ DWAPlannerROS:
   vth_samples: 40
   controller_frequency: 5.0  # turtle과 다름
 
-  # Trajectory Scoring Parameters
+  # Trajectory Scoring Parameters  #almost default value
   path_distance_bias: 32.0
-  goal_distance_bias: 20.0
-  occdist_scale: 0.02
+  goal_distance_bias: 24.0  #default
+  occdist_scale: 0.01 #default
   forward_point_distance: 0.325
   stop_time_buffer: 0.2
   scaling_speed: 0.25
-  max_scaling_factor: 0.2
+  max_scaling_factor: 0.25
 
   # Oscillation Prevention Parameters
   oscillation_reset_dist: 0.05

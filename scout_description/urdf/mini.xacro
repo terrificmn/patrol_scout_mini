@@ -77,7 +77,7 @@
     </link>
 
     <joint name="t265_joint" type="fixed">
-        <origin xyz="0.32 0 0.18" rpy="0 0.2 0" />
+        <origin xyz="0.2 0 0.18" rpy="0 0 0" />
         <parent link="base_link"/>
         <child link="t265_link"/>
     </joint>
@@ -86,7 +86,7 @@
     </link>
 
     <joint name="l515_joint" type="fixed">
-        <orgin xyz="0.32 0 0.18" rpy="0 0 0" />
+        <orgin xyz="0.2 0 0.18" rpy="0 0 0" />
         <parent link="base_link" />
         <child link="l515_link" />
     </joint>
