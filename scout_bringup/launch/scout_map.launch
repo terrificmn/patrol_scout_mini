@@ -14,11 +14,13 @@
     <arg name="sw_registered"     default="false"/>
     <arg name="localization"      default="false"/>
     <arg name="move_forward_only" default="true"/>
+    <arg name="wait_for_transform"  default="0.2"/> 
     
     <include file="$(find scout_bringup)/launch/scout_mini_remote.launch"></include>
     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
     
     <!-- rs-l515_and_t265.launch need to be created in a realsense2-camera pkg -->
+    
     <include file="$(find realsense2_camera)/launch/rs_l515_and_t265.launch">
             <arg name="device_type_camera1"             value="$(arg device_type_camera1)"/>
             <arg name="device_type_camera2"             value="$(arg device_type_camera2)"/>
@@ -27,34 +29,35 @@
             <arg name="camera1"                         value="$(arg camera1)"/>
             <arg name="camera2"                         value="$(arg camera2)"/>
             <arg name="clip_distance"                   value="$(arg clip_distance)"/>
-
-            <!-- need be modified and try out below -->
-            <!-- need be modified and try out-->
-            <!-- need be modified and try out-->
-            <!-- <arg name="unite_imu_method"> --> <!-- trying-->
+            
+            
+            
             <!-- <arg name="align_depth" value="true"/> 
             <arg name="filters" value="pointcloud"/> -->
             <!-- <arg name="hold_back_imu_for_frames" />  -->
             
     </include>
 
-    <include file="$(find scout_description)/launch/move_base.launch">
+
+    <include file="$(find scout_navigation)/launch/move_base.launch">
         <arg name="move_forward_only" value="$(arg move_forward_only)"/>
     </include>
+    
+
+    <include if="$(arg localization)" file="$(find scout_navigation)/launch/scout_navigation.launch" />
 
     <!-- rtabmap -->
     <include file="$(find rtabmap_ros)/launch/rtabmap.launch">
         <!-- <param name="Grid/RangeMax"              type="string" value="6.0"/> -->
         <!-- Visual Odometry Stategy into Frame to Frame 로 바꿈 -->
         <param name="Odom/Strategy"              type="string" value="1"/>
-         <remap from="/rtabmap/grid_map" to="/map"/>
-            <arg name="rtabmap_args"       value="--delete_db_on_start
-                                            --SURF/HessianThreshold 100"/>
+        <remap from="/rtabmap/grid_map" to="/map"/>
+            <arg unless="$(arg localization)" name="rtabmap_args"  default="--delete_db_on_start"/>
 
+            <arg if="$(arg localization)" name="rtabmap_args"       value="--SURF/HessianThreshold 100"/>
             <arg name="depth_topic"        value="/$(arg camera2)/aligned_depth_to_color/image_raw"/>
             <arg name="frame_id"           value="$(arg camera2)_link"/>
             <arg name="visual_odometry"    value="false"/> <!-- odom_topic으로 연결됨 t265/odom/sample-->
-            
 
             <arg name="rgbd_sync"          value="true"/>
             <arg name="approx_rgbd_sync"   value="false"/>
@@ -68,6 +71,7 @@
             <param name="cloud_noise_filtering_radius" value="0.05"/>
             <param name="cloud_noise_filtering_min_neighbors" value="2"/>
             <!-- Change inital costmap size for move_base -->
+            <!-- 2D slam -->
 	        <param name="Reg/Force3DoF"    value="true" />
 	        <param name="Optimizer/Slam2D" value="true" />
             
@@ -94,6 +98,7 @@
             <arg name="camera_info_topic"  value="/$(arg camera2)/color/camera_info"/>
             <arg name="queue_size"         value="200"/>
 
+            <!-- localization mode -->
             <param     if="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="false"/>
             <param unless="$(arg localization)" name="Mem/IncrementalMemory" type="string" value="true"/>
             <param name="Mem/InitWMWithAllNodes" type="string" value="$(arg localization)"/>
@@ -108,7 +113,7 @@
     
     <group if="$(arg use_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
-        args="-d $(find scout_description)/rviz/scout_navigation.rviz"/>
+        args="-d $(find scout_navigation)/rviz/scout_navigation.rviz"/>
     </group>
 
 </launch>

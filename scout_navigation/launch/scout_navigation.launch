@@ -13,76 +13,53 @@
     <arg name="simulation"        default="false"/>
     <arg name="sw_registered"     default="false"/>
     <arg name="localization"      default="true"/>
-        
-    <!-- rs-l515_and_t265.launch need to be created in a realsense2-camera pkg -->
-    <include file="$(find realsense2_camera)/launch/rs_l515_and_t265.launch">
-            <arg name="device_type_camera1"             value="$(arg device_type_camera1)"/>
-            <arg name="device_type_camera2"             value="$(arg device_type_camera2)"/>
-            <arg name="serial_no_camera1"               value="$(arg serial_no_camera1)"/>
-            <arg name="serial_no_camera2"               value="$(arg serial_no_camera2)"/>
-            <arg name="camera1"                         value="$(arg camera1)"/>
-            <arg name="camera2"                         value="$(arg camera2)"/>
-            <arg name="clip_distance"                   value="$(arg clip_distance)"/>
-    </include>
-
-  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node">
+    <arg name="wait_for_transform"  default="0.2"/> 
+  
+  
+  <!-- <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node">
         <remap from="cloud_in" to="/l515/depth/color/points" />
-
-        <!-- <param name="min_height" value="0.3"/> 
-        <param name="max_height" value="0.3"/> -->
         <param name="range_min" value="0.2"/>
         <param name="range_max" value="9.0"/>
-        <remap from="scan" to="/scan" />
+        <remap from="scan" to="/scan" /> -->
         <!-- publish는 scan으로 다시 내보내줌 , from과 to가 헤깔리지만 from이 노드에서 서브스크라이브 함-->
-  </node>
+  <!-- </node> -->
 
-  <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_node">
+  <!-- <node pkg="imu_filter_madgwick" type="imu_filter_node" name="imu_filter_node">
         <param name="use_mag" value="true"/>
         <param name="publish_tf" value="false"/>
         <param name="world_frame" value="enu" />
-        <remap from="/imu/data_raw" to="/t265/imu"/>
+        <remap from="/imu/data_raw" to="/t265/imu"/> -->
         <!-- 서브스크라이브를 /imu/data_raw로 하고 퍼블리시는 imu/data로 해준다 -->
-  </node>
+  <!-- </node> -->
 
   <!-- Arguments -->
   <!-- <arg name="model" /> -->
-  <arg name="map_file" default="$(find scout_navigation)/maps/map.yaml"/>
-  <arg name="open_rviz" default="true"/>
-  <arg name="move_forward_only" default="false"/>
-
-  <!-- scout_mini -->
-  <include file="$(find scout_bringup)/launch/scout_mini_remote.launch">
-    <!-- <arg name="model" value="$(arg model)" /> -->
-  </include>
-  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   
+  
+  <arg name="open_rviz" default="true"/>
+  <arg name="move_forward_only" default="true"/>
+
+ 
   <!-- 베이스링크와 맵을 연결해서 tf-tree가 완성되고 모델도 잘 나오게 된다. -->
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_map" args="0 0 0 0 0 0 /base_link /map 100"/>
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_t265_link" args="0.2 0 0.18 0 0 0 /base_link /t265_link 30"/>
-  <node pkg="tf" type="static_transform_publisher" name="base_link_to_l515_link" args="0.2 0 0.18 0 0 0 /base_link /l515_link 30"/>
+  <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_map" args="0 0 0 0 0 0 /base_link /map 100"/> --> <!-- scout_map used-->
+
+  <!-- <node pkg="tf" type="static_transform_publisher" name="base_link_to_t265_link" args="0.2 0 0.18 0 0 0 /base_link /t265_link 30"/>
+  <node pkg="tf" type="static_transform_publisher" name="base_link_to_l515_link" args="0.2 0 0.18 0 0 0 /base_link /l515_link 30"/> -->
 
 
   <!-- Map server -->
+  <!-- map_server node needs arg map_file  -->
+  <arg name="map_file" default="$(find scout_navigation)/maps/map.yaml"/>
   <node pkg="map_server" name="map_server" type="map_server" args="$(arg map_file)">
     <param name="frame_id" value="map"/>
-  </node>
+  </node> 
 
   <!-- AMCL -->
   <include file="$(find scout_navigation)/launch/amcl.launch"/>
 
-  <!-- move_base -->
-  <include file="$(find scout_navigation)/launch/move_base.launch">
-    <!-- <arg name="model" value="$(arg model)" /> -->
-    <arg name="move_forward_only" value="$(arg move_forward_only)"/>
-    
-  </include>
-
+  <!-- the reason why model shakes is including a launch file below -->
   <!-- 실제 구동할 수 있게 scout-mini 불러오기 -->
   <include file="$(find scout_bringup)/launch/scout_minimal.launch" />
   
-  <!-- rviz -->
-  <group if="$(arg open_rviz)"> 
-    <node pkg="rviz" type="rviz" name="rviz" required="true"
-          args="-d $(find scout_navigation)/rviz/scout_navigation.rviz"/>
-  </group>
+  
 </launch>
