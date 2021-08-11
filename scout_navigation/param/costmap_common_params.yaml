@@ -15,7 +15,7 @@ obstacle_layer:
  enabled: true
  obstacle_range: 3.0 #3.0
  raytrace_range: 3.5 #3.5
- inflation_radius: 0.1 #0.2 #장애물 공간 radius
+ inflation_radius: 0.2 #0.2 #장애물 공간 radius
  track_unknown_space: fault #fault
  combination_method: 1
 
@@ -23,30 +23,28 @@ obstacle_layer:
 #  observation_sources: laser_scan_sensor
 #  laser_scan_sensor: {data_type: LaserScan, topic: scan, marking: true, clearing: true}
 
-#  observation_sources: depth
-#  depth:
-#   data_type: PointCloud2
-#   topic: /l515/depth/color/points
-#   marking: true
-#   clearing: true
-#   inf_is_valid: true
-
- observation_sources: scan
- scan:
-  data_type: LaserScan
-  topic: scan
+ observation_sources: depth
+ depth:
+  data_type: PointCloud2
+  topic: /l515/depth/color/points
   marking: true
-  clearing: true 
-  inf_is_valid: true  #this parameter is important to do the trick
+  clearing: true
+  inf_is_valid: true
+
+
+## use laserscan with pointcloud_to_laserscan node (scout_navigation.launch file)
+#  observation_sources: scan
+#  scan:
+#   data_type: LaserScan
+#   topic: scan
+#   marking: true
+#   clearing: true 
+#   inf_is_valid: true  #this parameter is important to do the trick
 
   
-
-
-
-
 inflation_layer:
   enabled:              true
-  cost_scaling_factor:  5.0  # exponential rate at which the obstacle cost drops off (default: 10)
+  cost_scaling_factor:  9.0  # exponential rate at which the obstacle cost drops off (default: 10)
   #장애물 사이를 지나갈 때 장애물로 부터 멀리떨어져서 지나가려면 숫자가 작아야함
   inflation_radius:     0.3  # max. distance from an obstacle at which costs are incurred for planning paths. #0.5
 
